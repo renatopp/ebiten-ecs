@@ -1,4 +1,4 @@
-package sk
+package inputs
 
 import "github.com/hajimehoshi/ebiten/v2"
 
@@ -9,6 +9,12 @@ type Key struct {
 	curValue  bool
 }
 
+func NewKey(code ebiten.Key) *Key {
+	return &Key{
+		code: code,
+	}
+}
+
 func (k *Key) Code() int {
 	return int(k.code)
 }
@@ -17,8 +23,8 @@ func (k *Key) Name() string {
 	return ebiten.KeyName(k.code)
 }
 
-func (k *Key) Device() InputDevice {
-	return InputDeviceKeyboard
+func (k *Key) Device() Device {
+	return DeviceKeyboard
 }
 
 func (k *Key) IsDown() bool {

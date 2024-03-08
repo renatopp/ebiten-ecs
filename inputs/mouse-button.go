@@ -1,4 +1,4 @@
-package sk
+package inputs
 
 import "github.com/hajimehoshi/ebiten/v2"
 
@@ -9,6 +9,12 @@ type MouseButton struct {
 	curValue  bool
 }
 
+func NewMouseButton(code ebiten.MouseButton) *MouseButton {
+	return &MouseButton{
+		code: code,
+	}
+}
+
 func (k *MouseButton) Code() int {
 	return int(k.code)
 }
@@ -17,8 +23,8 @@ func (k *MouseButton) Name() string {
 	return string(k.code)
 }
 
-func (k *MouseButton) Device() InputDevice {
-	return InputDeviceMouse
+func (k *MouseButton) Device() Device {
+	return DeviceMouse
 }
 
 func (k *MouseButton) IsDown() bool {

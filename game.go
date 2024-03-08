@@ -6,6 +6,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/renatopp/skald/inputs"
 )
 
 type Game struct {
@@ -13,6 +14,7 @@ type Game struct {
 
 	Assets   *AssetServer
 	Renderer *Renderer
+	Inputs   *inputs.System
 	Total    int // TODO: remove me
 
 	systems  []*systemEntry
@@ -24,6 +26,7 @@ func NewGame() *Game {
 		World:    NewWorld(),
 		Assets:   NewAssetServer(),
 		Renderer: NewRenderer(),
+		Inputs:   inputs.NewSystem(),
 
 		systems:  make([]*systemEntry, 0),
 		services: make(map[ID]interface{}),
@@ -94,8 +97,23 @@ func (g *Game) draw(screen *ebiten.Image) {
 	ebitenutil.DebugPrint(screen, msg)
 }
 
+var action = inputs.All{inputs.Keys.Ctrl, inputs.MouseButtons.Right}
+
 func (g *Game) tick() error {
 	g.Renderer.Clear()
+	g.Inputs.Update()
+
+	if inputs.Keys.Space.IsPressed() {
+		println("Space")
+	}
+
+	if inputs.MouseButtons.Left.IsPressed() {
+		println("Left")
+	}
+
+	if action.IsPressed() {
+		println("Action")
+	}
 
 	buffer := make([]*systemEntry, 0)
 

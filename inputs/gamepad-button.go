@@ -1,4 +1,4 @@
-package sk
+package inputs
 
 import "github.com/hajimehoshi/ebiten/v2"
 
@@ -22,8 +22,8 @@ func (k *GamepadButton) Name() string {
 	return string(k.code)
 }
 
-func (k *GamepadButton) Device() InputDevice {
-	return InputDeviceGamepad
+func (k *GamepadButton) Device() Device {
+	return DeviceGamepad
 }
 
 func (k *GamepadButton) IsDown() bool {
