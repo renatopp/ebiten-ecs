@@ -2,11 +2,11 @@ package components
 
 import (
 	sk "github.com/renatopp/skald"
-	"github.com/renatopp/skald/mathz"
+	sk1 "github.com/renatopp/skald/sk"
 )
 
 type DCamera struct {
-	Rect mathz.Rect
+	Rect sk1.Rect
 }
 
 var Camera = sk.NewComponent[DCamera]()

@@ -4,17 +4,14 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/renatopp/skald/assets"
-	"github.com/renatopp/skald/render"
-
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
 type Game struct {
 	World    *World
-	Assets   *assets.AssetServer
-	Renderer *render.Renderer
+	Assets   *AssetServer
+	Renderer *Renderer
 	Total    int
 
 	systems  []*systemEntry
@@ -24,8 +21,8 @@ type Game struct {
 func NewGame() *Game {
 	g := &Game{
 		World:    NewWorld(),
-		Assets:   assets.NewAssetServer(),
-		Renderer: render.NewRenderer(),
+		Assets:   NewAssetServer(),
+		Renderer: NewRenderer(),
 
 		systems:  make([]*systemEntry, 0),
 		services: make(map[ID]interface{}),

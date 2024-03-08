@@ -2,11 +2,10 @@ package components
 
 import (
 	sk "github.com/renatopp/skald"
-	"github.com/renatopp/skald/assets"
 )
 
 type DSprite struct {
-	Texture *assets.Texture
+	Texture *sk.Texture
 	Layer   uint
 	ZIndex  int
 }

@@ -1,4 +1,4 @@
-package mathz
+package sk
 
 import "math"
 

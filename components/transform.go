@@ -2,12 +2,12 @@ package components
 
 import (
 	sk "github.com/renatopp/skald"
-	"github.com/renatopp/skald/mathz"
+	sk1 "github.com/renatopp/skald/sk"
 )
 
 type DTransform struct {
-	Position mathz.Vec2
-	Scale    mathz.Vec2
+	Position sk1.Vec2
+	Scale    sk1.Vec2
 	Rotation float64
 }
 

@@ -1,4 +1,4 @@
-package render
+package sk
 
 import (
 	"container/heap"
@@ -46,7 +46,6 @@ func (r *Renderer) Queue(layer uint, zindex int, image *ebiten.Image, op *ebiten
 	} else {
 		heap.Push(&r.layers[layer], &renderItem{zindex, len(r.layers[layer]), image, op})
 	}
-
 }
 
 func (r *Renderer) Draw(screen *ebiten.Image) {
