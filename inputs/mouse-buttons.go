@@ -4,40 +4,17 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-type _mouseButtons struct {
-	Left    ITrigger
-	Middle  ITrigger
-	Right   ITrigger
-	Back    ITrigger
-	Forward ITrigger
+var MouseButtonLeft = NewMouseButton(ebiten.MouseButton0)
+var MouseButtonMiddle = NewMouseButton(ebiten.MouseButton1)
+var MouseButtonRight = NewMouseButton(ebiten.MouseButton2)
+var MouseButtonBack = NewMouseButton(ebiten.MouseButton3)
+var MouseButtonForward = NewMouseButton(ebiten.MouseButton4)
 
-	Button0 ITrigger
-	Button1 ITrigger
-	Button2 ITrigger
-	Button3 ITrigger
-	Button4 ITrigger
+var MouseButton0 = MouseButtonLeft
+var MouseButton1 = MouseButtonRight
+var MouseButton2 = MouseButtonMiddle
+var MouseButton3 = MouseButtonBack
+var MouseButton4 = MouseButtonForward
 
-	Any ITrigger
-	All ITrigger
-}
-
-func newMouseButtons() *_mouseButtons {
-	buttons := &_mouseButtons{}
-	buttons.Left = NewMouseButton(ebiten.MouseButton0)
-	buttons.Middle = NewMouseButton(ebiten.MouseButton1)
-	buttons.Right = NewMouseButton(ebiten.MouseButton2)
-	buttons.Back = NewMouseButton(ebiten.MouseButton3)
-	buttons.Forward = NewMouseButton(ebiten.MouseButton4)
-
-	buttons.Button0 = buttons.Left
-	buttons.Button1 = buttons.Right
-	buttons.Button2 = buttons.Middle
-	buttons.Button3 = buttons.Back
-	buttons.Button4 = buttons.Forward
-
-	buttons.Any = Any{buttons.Left, buttons.Middle, buttons.Right, buttons.Back, buttons.Forward}
-	buttons.All = All{buttons.Left, buttons.Middle, buttons.Right, buttons.Back, buttons.Forward}
-	return buttons
-}
-
-var MouseButtons = newMouseButtons()
+var MouseButtonAny = Any{MouseButtonLeft, MouseButtonMiddle, MouseButtonRight, MouseButtonBack, MouseButtonForward}
+var MouseButtonAll = All{MouseButtonLeft, MouseButtonMiddle, MouseButtonRight, MouseButtonBack, MouseButtonForward}

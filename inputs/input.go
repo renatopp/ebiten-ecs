@@ -30,8 +30,8 @@ func NewSystem() *System {
 }
 
 func (i *System) Update() {
-	Keys.All.update()
-	MouseButtons.All.update()
+	KeyAll.update()
+	MouseButtonAll.update()
 }
 
 // -----------------------------------------------------------------------------
