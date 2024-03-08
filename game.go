@@ -97,8 +97,6 @@ func (g *Game) draw(screen *ebiten.Image) {
 	ebitenutil.DebugPrint(screen, msg)
 }
 
-var action = inputs.All{inputs.Keys.Ctrl, inputs.MouseButtons.Right}
-
 func (g *Game) tick() error {
 	g.Renderer.Clear()
 	g.Inputs.Update()
