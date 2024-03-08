@@ -1,4 +1,4 @@
-package assets
+package sk
 
 type Handler struct {
 	id      string

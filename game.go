@@ -9,10 +9,11 @@ import (
 )
 
 type Game struct {
-	World    *World
+	World *World
+
 	Assets   *AssetServer
 	Renderer *Renderer
-	Total    int
+	Total    int // TODO: remove me
 
 	systems  []*systemEntry
 	services map[ID]interface{}

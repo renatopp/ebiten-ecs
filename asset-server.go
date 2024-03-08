@@ -1,4 +1,4 @@
-package 
+package sk
 
 import (
 	"os"
