@@ -17,17 +17,21 @@ type Game struct {
 	Renderer *render.Renderer
 	Total    int
 
-	systems []*systemEntry
+	systems  []*systemEntry
+	services map[ID]interface{}
 }
 
 func NewGame() *Game {
-	return &Game{
+	g := &Game{
 		World:    NewWorld(),
 		Assets:   assets.NewAssetServer(),
 		Renderer: render.NewRenderer(),
 
-		systems: make([]*systemEntry, 0),
+		systems:  make([]*systemEntry, 0),
+		services: make(map[ID]interface{}),
 	}
+
+	return g
 }
 
 func (g *Game) AddSystem(system *SystemDefinition, options ...*SystemOptions) {
@@ -63,6 +67,18 @@ func (g *Game) RemoveSystem(system *SystemDefinition) {
 			break
 		}
 	}
+}
+
+func (g *Game) AddService(service IService) {
+	if _, ok := g.services[service.Id()]; ok {
+		return
+	}
+
+	g.services[service.Id()] = service.New()
+}
+
+func (g *Game) RemoveService(service IService) {
+	delete(g.services, service.Id())
 }
 
 func (g *Game) Play() {

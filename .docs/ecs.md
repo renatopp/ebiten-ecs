@@ -1,5 +1,14 @@
 # ECS
 
+- [ECS](#ecs)
+	- [Basics](#basics)
+	- [Components](#components)
+	- [Entities](#entities)
+	- [Archetypes](#archetypes)
+	- [Queries](#queries)
+	- [Systems](#systems)
+
+
 ECS, or Entity-Component-System, is an architectural pattern used to represent and process objects within the game world. It separates data and behavior into three main elements:
 
 - **Components**: essentially data containers that hold specific aspects of an object, like its position, health, or appearance.
@@ -15,8 +24,6 @@ The ECS architecture provides a series of benefits for our games:
 - **Performance**: ECS can improve performance by allowing for efficient data access and manipulation through components.
 - **Maintainability**: Separating data, behavior, and logic can make code easier to understand, maintain, and debug.
 - **Parallelization**: ECS can facilitate parallel processing, potentially improving performance in situations where multiple systems can operate concurrently.
-
----
 
 ## Basics
 
@@ -85,6 +92,8 @@ func (d *DPurse) Credit(value int) {
 }
 ```
 
+> **Important!** Only one component of each type is allowed in the same entity. Duplicated components are ignored.
+
 Now imagine that you want to initialize all purses with a predefined number of coins, you can do it by passing a default object as template:
 
 ```go
@@ -119,8 +128,98 @@ Aiming to provide a flexible solution, you may also define some hooks in the com
 - `OnDettached(c *T, e *EntityInstance)` called when the component is removed from an entity instance.
 
 ## Entities
-## Systems
+
+Entities are simple objects that contain components. You can create a new entity definition as:
+
+```go
+Player := sk.NewEntity(Transform, Sprite, Collision)
+```
+
+where `Transform`, `Sprite` and `Collision` are all components. Notice that at this moment, `Player` is an entity "template", or, as it is called internally, an `EntityDefinition`. This object will help us instantiate all Player entities in the game:
+
+```go
+game.world.Spawn(Player)
+```
+
+The spawn function will instantiate the entity and include it in the world. You may want to customize the individual entity upon creation (instead of changing the definition of all of them), to this, you can provide a setup function:
+
+```go
+game.world.SpawnMulti(10, Player, func (e *EntityInstance) {
+	transform := Transform.Get(e)
+	transform.position.x = rand.Int()
+	transform.position.y = rand.Int()
+})
+```
+
+Alternatively, you may provide the hooks for:
+
+- `OnSpawned(e *EntityInstance)` called when the entity joins the world.
+- `OnDespawned(e *EntityInstance)` called when the entity is removed from the world.
+
 ## Archetypes
+
+Archetypes is one common topic in ECS engines. In **Skald Engine**, we don't make much use of them. Instead, you may simply define an archetype as a collection of Components and use them to create the entity:
+
+```go
+moverArchetype := []IComponent { Transform, Velocity, Collider }
+player := sk.NewEntity(moverArchetype...)
+```
+
 ## Queries
-## World
-## Plugins
+
+Before using system, it is important to understand the Queries. In **Skald Engine**, queries serve as index for data, just like in a database. The query will cache all components it needs every time an entity enters or leave a world, making the process of querying a specific group of components very performance. However, similar to a database, the price of this performance is memory. Internally, the query holds a reference for every component described in it.
+
+```go
+var DebitQuery = sk.NewQuery[struct {
+	Purse   *DPurse
+	Account *DAccount `sk:"optional"`
+}]()
+```
+
+The query above will cache every entity that has the `DPurse` component and, if present, the `DAccount` component.
+
+You can register the query manually in the world:
+
+```go
+game.world.AddQuery(DebitQuery)
+```
+
+or insert it indirectly as dependency of a system.
+
+## Systems
+
+Systems are processors. Simple functions that execute the game logic upon a group of entities. For example, you can write a system that just prints a `Hello, World` without manipulating any entity:
+
+```go
+helloSystem := sk.NewSystem(func (g *sk.Game) error {
+	println("Hello, World")
+})
+```
+
+You can also have a system that looks for the Purse component in every entity in the world:
+
+```go
+slowSystem := sk.NewSystem(func (g *sk.Game) error {
+	for _, e := g.world.Entities() {
+		if p := Purse.Get(e); p != nil {
+			p.Coins++
+		}
+	}
+})
+```
+
+This `slowSystem`, as informed by its name, does its job but does very poorly in terms of performance, since it must check in every object of the world for a component that just a couple objects may have. In order to improve it, you can add a Query for caching the components:
+
+```go
+fastSystem := sk.NewSystem(func (g *sk.Game) error {
+	for _, r := DebitQuery.Query() {
+		r.Purse.Coins++
+	}
+}, DebitQuery)
+
+
+game.AddSystem(fastSystem)
+```
+
+By adding the `fastSystem` in the game, **Skald Engine** automatically adds all the dependent queries in the world.
+

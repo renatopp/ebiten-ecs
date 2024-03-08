@@ -16,6 +16,12 @@ type EntityDefinition struct {
 	OnDespawned func(*EntityInstance)
 }
 
+type EntityOptions struct {
+	components  []IComponent
+	OnSpawned   func(*EntityInstance)
+	OnDespawned func(*EntityInstance)
+}
+
 func NewEntity(components ...IComponent) *EntityDefinition {
 	e := &EntityDefinition{
 		id:         nextEntityDefinitionId,
@@ -23,6 +29,13 @@ func NewEntity(components ...IComponent) *EntityDefinition {
 	}
 
 	nextEntityDefinitionId++
+	return e
+}
+
+func NewEntityWithOptions(options EntityOptions) *EntityDefinition {
+	e := NewEntity(options.components...)
+	e.OnSpawned = options.OnSpawned
+	e.OnDespawned = options.OnDespawned
 	return e
 }
 
@@ -100,6 +113,10 @@ func (e *EntityInstance) HasComponent(id ID) bool {
 func (e *EntityInstance) AddComponent(c IComponent) bool {
 	if e.HasComponent(c.Id()) {
 		return false
+	}
+
+	for _, dep := range c.getDependencies() {
+		e.AddComponent(dep)
 	}
 
 	comp := c.New()
