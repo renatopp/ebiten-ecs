@@ -5,6 +5,7 @@ import (
 )
 
 type DTransform struct {
+	Enabled  bool
 	Position sk.Vec2
 	Scale    sk.Vec2
 	Rotation float64
