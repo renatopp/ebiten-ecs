@@ -25,9 +25,14 @@ Roadmap:
 
 1. Example: pong Game
 
+	 The idea is to create a single game to feel the development flow of the engine and work on real necessities, moreover, working as documentation and showcase.
+
    Dependencies:
 
 	 - input system
 	 - simple collisions
 	 - text
+	 - mobile build
+	 - web build
+	 - PC build
 

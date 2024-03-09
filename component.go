@@ -2,6 +2,8 @@ package sk
 
 import "reflect"
 
+type Components []IComponent
+
 type IComponent interface {
 	Id() ID
 	Name() string

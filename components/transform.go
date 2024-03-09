@@ -11,4 +11,11 @@ type DTransform struct {
 	Rotation float64
 }
 
-var Transform = sk.NewComponent[DTransform]()
+var Transform = sk.NewComponentWithOptions(sk.ComponentOptions[DTransform]{
+	OnCreated: func(c *DTransform) {
+		c.Enabled = true
+		c.Position = sk.Vec2{X: 0, Y: 0}
+		c.Scale = sk.Vec2{X: 1, Y: 1}
+		c.Rotation = 0
+	},
+})

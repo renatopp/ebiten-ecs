@@ -17,7 +17,7 @@ type EntityDefinition struct {
 }
 
 type EntityOptions struct {
-	components  []IComponent
+	Components  []IComponent
 	OnSpawned   func(*EntityInstance)
 	OnDespawned func(*EntityInstance)
 }
@@ -33,7 +33,7 @@ func NewEntity(components ...IComponent) *EntityDefinition {
 }
 
 func NewEntityWithOptions(options EntityOptions) *EntityDefinition {
-	e := NewEntity(options.components...)
+	e := NewEntity(options.Components...)
 	e.OnSpawned = options.OnSpawned
 	e.OnDespawned = options.OnDespawned
 	return e

@@ -27,3 +27,7 @@ func NewTextureFromBytes(data []byte) (*Texture, error) {
 	img := ebiten.NewImageFromImage(imgData)
 	return &Texture{Image: img}, nil
 }
+
+func NewEmptyTexture(width, height int) *Texture {
+	return &Texture{Image: ebiten.NewImage(width, height)}
+}

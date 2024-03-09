@@ -16,6 +16,10 @@ var SpriteRendererQuery = sk.NewQuery[SpriteRendererResult]()
 
 var SpriteRenderer = sk.NewSystem(func(g *sk.Game) error {
 	for _, r := range SpriteRendererQuery.Query() {
+		if !r.Transform.Enabled {
+			continue
+		}
+
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Reset()
 		op.GeoM.Translate(r.Transform.Position.X, 600-r.Transform.Position.Y)
