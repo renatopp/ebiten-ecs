@@ -1,4 +1,4 @@
-package components
+package core
 
 import (
 	sk "github.com/renatopp/skald"

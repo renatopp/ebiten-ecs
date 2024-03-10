@@ -10,23 +10,29 @@ import (
 )
 
 type Game struct {
-	World *World
-
+	World    *World
 	Assets   *AssetServer
 	Renderer *Renderer
 	Inputs   *inputs.System
-	Total    int // TODO: remove me
+	Window   *Window
+	Screen   *Screen
 
 	systems  []*systemEntry
 	services map[ID]interface{}
+
+	totalEntities int // TODO: remove me
 }
 
 func NewGame() *Game {
+	ebiten.SetVsyncEnabled(false)
+
 	g := &Game{
 		World:    NewWorld(),
 		Assets:   NewAssetServer(),
 		Renderer: NewRenderer(),
 		Inputs:   inputs.NewSystem(),
+		Window:   NewWindow(),
+		Screen:   NewScreen(),
 
 		systems:  make([]*systemEntry, 0),
 		services: make(map[ID]interface{}),
@@ -91,9 +97,14 @@ func (g *Game) Play() {
 }
 
 func (g *Game) draw(screen *ebiten.Image) {
-	g.Renderer.Draw(screen)
+	op := &ebiten.DrawImageOptions{}
+	op.GeoM.Translate(-g.Screen.position.X*g.Screen.PixelsPerUnit, -g.Screen.position.Y*g.Screen.PixelsPerUnit)
 
-	msg := fmt.Sprintf("TPS: %0.2f;\nFPS: %0.2f\nTotal: %d", ebiten.ActualTPS(), ebiten.ActualFPS(), g.Total)
+	screen.Fill(g.Screen.color)
+	g.Renderer.Draw(screen, op)
+
+	// TODO: Remove me
+	msg := fmt.Sprintf("TPS: %0.2f;\nFPS: %0.2f\nTotal: %d", ebiten.ActualTPS(), ebiten.ActualFPS(), g.totalEntities)
 	ebitenutil.DebugPrint(screen, msg)
 }
 
@@ -103,7 +114,6 @@ func (g *Game) tick() error {
 
 	buffer := make([]*systemEntry, 0)
 
-	ebiten.SetVsyncEnabled(false)
 	for _, entry := range g.systems {
 		if !entry.options.once {
 			buffer = append(buffer, entry)

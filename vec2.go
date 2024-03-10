@@ -6,6 +6,10 @@ type Vec2 struct {
 	X, Y float64
 }
 
+func (v Vec2) Equal(v2 Vec2) bool {
+	return v.X == v2.X && v.Y == v2.Y
+}
+
 func (v Vec2) Add(v2 Vec2) Vec2 {
 	return Vec2{v.X + v2.X, v.Y + v2.Y}
 }
@@ -44,6 +48,10 @@ func (v Vec2) Dot(v2 Vec2) float64 {
 
 func (v Vec2) Cross(v2 Vec2) float64 {
 	return v.X*v2.Y - v.Y*v2.X
+}
+
+func (v Vec2) Distance(v2 Vec2) float64 {
+	return math.Sqrt((v2.X-v.X)*(v2.X-v.X) + (v2.Y-v.Y)*(v2.Y-v.Y))
 }
 
 func (v Vec2) Length() float64 {

@@ -2,8 +2,10 @@ package sk
 
 import (
 	"container/heap"
+	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
 type Renderer struct {
@@ -48,12 +50,28 @@ func (r *Renderer) Queue(layer uint, zindex int, image *ebiten.Image, op *ebiten
 	}
 }
 
-func (r *Renderer) Draw(screen *ebiten.Image) {
+func (r *Renderer) Draw(screen *ebiten.Image, ops *ebiten.DrawImageOptions) {
 	for _, layer := range r.layers {
 		for _, item := range layer {
 			screen.DrawImage(item.image, item.op)
 		}
 	}
+
+	im := ebiten.NewImage(1000, 1000)
+	vector.DrawFilledCircle(im, 500, 500, 100, color.White, false)
+	vector.DrawFilledCircle(im, 500, 500, 1, color.RGBA{255, 0, 0, 255}, false)
+	vector.DrawFilledCircle(im, 700, 500, 50, color.White, false)
+	vector.DrawFilledCircle(im, 300, 500, 50, color.White, false)
+	vector.DrawFilledCircle(im, 500, 700, 50, color.White, false)
+	vector.DrawFilledCircle(im, 500, 300, 50, color.White, false)
+
+	ops2 := &ebiten.DrawImageOptions{}
+	ops2.GeoM.Translate(PIXELS_PER_UNIT*SCREEN_WIDTH/2, PIXELS_PER_UNIT*SCREEN_HEIGHT/2)
+	ops2.GeoM.Translate(-500, -500)
+
+	// ops2.GeoM.Concat(ops.GeoM)
+
+	screen.DrawImage(im, ops2)
 }
 
 func (r *Renderer) Clear() {

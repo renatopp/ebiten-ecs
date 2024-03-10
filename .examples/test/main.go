@@ -3,42 +3,50 @@ package main
 import (
 	"image/color"
 
-	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
 	sk "github.com/renatopp/skald"
-	c "github.com/renatopp/skald/components"
-
-	s "github.com/renatopp/skald/systems"
+	"github.com/renatopp/skald/core"
 )
 
-var FollowMouse = sk.NewSystem(func(g *sk.Game) error {
-	for _, box := range g.World.Entities() {
-		t := c.Transform.Get(box)
-		x, y := ebiten.CursorPosition()
-		t.Position = sk.Vec2{X: float64(x), Y: float64(600 - y)}
-	}
+var CIRCLE = 0
+var BOX = 1
 
-	return nil
-})
+type DBody struct {
+	LinearVelocity  sk.Vec2
+	AngularVelocity float64
+
+	Mass        float64
+	Density     float64
+	Restitution float64
+	Area        float64
+
+	Static bool
+
+	Shape  int
+	Radius float64
+	Width  float64
+	Height float64
+}
+
+// var CiBody = skald.NewComponent()
 
 func main() {
 	game := sk.NewGame()
 
 	box := sk.NewEntityWithOptions(sk.EntityOptions{
-		Components: sk.Components{c.Transform, c.Sprite},
+		Components: sk.Components{core.Transform, core.Sprite},
 		OnSpawned: func(e *sk.EntityInstance) {
-			t := c.Transform.Get(e)
-			t.Position = sk.Vec2{X: 100, Y: 100}
+			t := core.Transform.Get(e)
+			t.Position = sk.Vec2{X: 400, Y: 300}
 
-			s := c.Sprite.Get(e)
-			s.Texture = sk.NewEmptyTexture(50, 30)
+			s := core.Sprite.Get(e)
+			s.Texture = sk.NewEmptyTexture(30, 30)
 
-			vector.DrawFilledRect(s.Texture.Image, -25, -15, 50, 30, color.White, true)
+			vector.DrawFilledRect(s.Texture.Image, 0, 0, 30, 30, color.Transparent, true)
 		},
 	})
 
-	game.AddSystem(s.SpriteRenderer)
-	game.AddSystem(FollowMouse)
+	game.AddSystem(core.SpriteRenderer)
 	game.World.Spawn(box)
 
 	game.Play()
