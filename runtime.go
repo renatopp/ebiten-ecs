@@ -9,7 +9,7 @@ type runtime struct {
 }
 
 func (g *runtime) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
-	return int(g.Game.Screen.size.X * PIXELS_PER_UNIT), int(g.Game.Screen.size.Y * PIXELS_PER_UNIT)
+	return g.Game.Screen.viewportWidth, g.Game.Screen.viewportHeight
 }
 
 func (g *runtime) Draw(screen *ebiten.Image) {

@@ -89,9 +89,9 @@ func (g *Game) RemoveService(service IService) {
 }
 
 func (g *Game) Play() {
-	ebiten.SetWindowSize(800, 600)
-	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
-	if err := ebiten.RunGame(&runtime{Game: g}); err != nil {
+	if err := ebiten.RunGameWithOptions(&runtime{Game: g}, &ebiten.RunGameOptions{
+		InitUnfocused: false,
+	}); err != nil {
 		log.Fatal(err)
 	}
 }

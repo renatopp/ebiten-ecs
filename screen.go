@@ -18,6 +18,9 @@ type Screen struct {
 	color    color.Color
 	minZoom  float64
 	maxZoom  float64
+
+	viewportWidth  int
+	viewportHeight int
 }
 
 func NewScreen() *Screen {
@@ -34,6 +37,7 @@ func NewScreen() *Screen {
 	}
 
 	s.SetColor(color.RGBA{110, 164, 191, 255})
+	s.updateViewport()
 
 	return s
 }
@@ -52,7 +56,9 @@ func (s *Screen) GetSize() Vec2 {
 
 func (s *Screen) SetSize(w, h float64) {
 	s.size = Vec2{X: w, Y: h}
+	s.Surface.Dispose()
 	s.Surface = ebiten.NewImage(int(w*s.PixelsPerUnit), int(h*s.PixelsPerUnit))
+	s.updateViewport()
 }
 
 func (s *Screen) GetZoom() float64 {
@@ -91,4 +97,9 @@ func (s *Screen) SetColor(color color.Color) {
 
 func (s *Screen) Clear() {
 	s.Surface.Fill(s.color)
+}
+
+func (s *Screen) updateViewport() {
+	s.viewportWidth = int(s.size.X * s.PixelsPerUnit)
+	s.viewportHeight = int(s.size.Y * s.PixelsPerUnit)
 }
