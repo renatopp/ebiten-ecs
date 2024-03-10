@@ -6,8 +6,8 @@ type GamepadButton struct {
 	id   ebiten.GamepadID
 	code ebiten.GamepadButton
 
-	prevValue float32
-	curValue  float32
+	prevValue float64
+	curValue  float64
 }
 
 func (k *GamepadButton) Id() int {
@@ -46,7 +46,7 @@ func (k *GamepadButton) GetBool() bool {
 	return k.curValue > 0
 }
 
-func (k *GamepadButton) GetFloat() float32 {
+func (k *GamepadButton) GetFloat() float64 {
 	return k.curValue
 }
 

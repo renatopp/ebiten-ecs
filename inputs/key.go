@@ -47,7 +47,7 @@ func (k *Key) GetBool() bool {
 	return k.curValue
 }
 
-func (k *Key) GetFloat() float32 {
+func (k *Key) GetFloat() float64 {
 	if k.curValue {
 		return 1
 	}

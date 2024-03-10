@@ -47,7 +47,7 @@ func (k *MouseButton) GetBool() bool {
 	return k.curValue
 }
 
-func (k *MouseButton) GetFloat() float32 {
+func (k *MouseButton) GetFloat() float64 {
 	if k.curValue {
 		return 1
 	}

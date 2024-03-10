@@ -14,12 +14,13 @@ type ITrigger interface {
 	IsPressed() bool
 	IsReleased() bool
 	GetBool() bool
-	GetFloat() float32
+	GetFloat() float64
 
 	update()
 }
 
 type ICursor interface {
+	Position() (x, y int)
 }
 
 // -----------------------------------------------------------------------------
@@ -35,6 +36,8 @@ func NewSystem() *System {
 func (i *System) Update() {
 	KeyAll.update()
 	MouseButtonAll.update()
+	MouseWheelX.update()
+	MouseWheelY.update()
 }
 
 // -----------------------------------------------------------------------------
@@ -92,7 +95,7 @@ func (any Any) GetBool() bool {
 
 }
 
-func (any Any) GetFloat() float32 {
+func (any Any) GetFloat() float64 {
 	for _, trigger := range any {
 		f := trigger.GetFloat()
 		if f != 0 {
@@ -176,7 +179,7 @@ func (all All) GetBool() bool {
 	return true
 }
 
-func (all All) GetFloat() float32 {
+func (all All) GetFloat() float64 {
 	for _, trigger := range all {
 		f := trigger.GetFloat()
 		if f == 0 {
