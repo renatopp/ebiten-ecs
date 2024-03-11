@@ -39,7 +39,8 @@ func main() {
 	})
 
 	game.AddSystem(core.SpriteRenderer)
-	game.AddSystem(RotateRotators)
+	game.AddSystem(core.ScreenZoom)
+	// game.AddSystem(RotateRotators)
 	game.World.SpawnMulti(15000, rabbits, func(e *sk.EntityInstance) {
 		t := core.Transform.Get(e)
 		t.Position.X = rand.Float64()*2 - 1

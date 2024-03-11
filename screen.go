@@ -50,6 +50,11 @@ func (s *Screen) SetPosition(x, y float64) {
 	s.position = Vec2{X: x, Y: y}
 }
 
+func (s *Screen) Move(x, y float64) {
+	s.position.X += x
+	s.position.Y += y
+}
+
 func (s *Screen) GetSize() Vec2 {
 	return s.size
 }
@@ -67,6 +72,13 @@ func (s *Screen) GetZoom() float64 {
 
 func (s *Screen) SetZoom(zoom float64) {
 	s.zoom = zoom
+}
+
+func (s *Screen) Zoom(zoom float64) {
+	s.zoom -= zoom
+	s.zoom = utils.Clamp(s.zoom, s.minZoom, s.maxZoom)
+
+	// TODO: recreate the screen
 }
 
 func (s *Screen) GetZoomLimits() (float64, float64) {
@@ -103,3 +115,15 @@ func (s *Screen) updateViewport() {
 	s.viewportWidth = int(s.size.X * s.PixelsPerUnit)
 	s.viewportHeight = int(s.size.Y * s.PixelsPerUnit)
 }
+
+// func (c *Camera) Resize(w, h int) *Camera {
+// 	c.Width = w
+// 	c.Height = h
+// 	newW := int(float64(w) * 1.0 / c.Scale)
+// 	newH := int(float64(h) * 1.0 / c.Scale)
+// 	if newW <= 16384 && newH <= 16384 {
+// 		c.Surface.Dispose()
+// 		c.Surface = ebiten.NewImage(newW, newH)
+// 	}
+// 	return c
+// }

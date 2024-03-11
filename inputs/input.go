@@ -21,6 +21,10 @@ type ITrigger interface {
 
 type ICursor interface {
 	Position() (x, y int)
+	HasMoved() bool
+	Moved() (x, y int)
+
+	update()
 }
 
 // -----------------------------------------------------------------------------
@@ -38,6 +42,7 @@ func (i *System) Update() {
 	MouseButtonAll.update()
 	MouseWheelX.update()
 	MouseWheelY.update()
+	MouseCursor.update()
 }
 
 // -----------------------------------------------------------------------------
