@@ -62,8 +62,13 @@ func (v Vec2) LengthSqr() float64 {
 	return v.X*v.X + v.Y*v.Y
 }
 
-func (v Vec2) Normalize() Vec2 {
-	return v.DivS(v.Length())
+func (v Vec2) Normalized() Vec2 {
+	l := v.Length()
+	if l == 0 {
+		return Vec2{}
+	}
+
+	return v.DivS(l)
 }
 
 func (v Vec2) Angle() float64 {
