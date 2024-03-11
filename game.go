@@ -3,10 +3,12 @@ package sk
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/renatopp/skald/inputs"
+	"github.com/renatopp/skald/utils"
 )
 
 type Game struct {
@@ -16,9 +18,11 @@ type Game struct {
 	Inputs   *inputs.System
 	Window   *Window
 	Screen   *Screen
+	Timer    *Timer
 
-	systems  []*systemEntry
-	services map[ID]interface{}
+	lastUpdate time.Time
+	systems    []*systemEntry
+	services   map[ID]interface{}
 
 	totalEntities int // TODO: remove me
 }
@@ -27,12 +31,14 @@ func NewGame() *Game {
 	ebiten.SetVsyncEnabled(false)
 
 	g := &Game{
-		World:    NewWorld(),
-		Assets:   NewAssetServer(),
-		Renderer: NewRenderer(),
-		Inputs:   inputs.NewSystem(),
-		Window:   NewWindow(),
-		Screen:   NewScreen(),
+		World:      NewWorld(),
+		Assets:     NewAssetServer(),
+		Renderer:   NewRenderer(),
+		Inputs:     inputs.NewSystem(),
+		Window:     NewWindow(),
+		Screen:     NewScreen(),
+		Timer:      NewTimer(),
+		lastUpdate: time.Now(),
 
 		systems:  make([]*systemEntry, 0),
 		services: make(map[ID]interface{}),
@@ -89,6 +95,7 @@ func (g *Game) RemoveService(service IService) {
 }
 
 func (g *Game) Play() {
+	g.lastUpdate = time.Now()
 	if err := ebiten.RunGameWithOptions(&runtime{Game: g}, &ebiten.RunGameOptions{
 		InitUnfocused: false,
 	}); err != nil {
@@ -98,7 +105,11 @@ func (g *Game) Play() {
 
 func (g *Game) draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(-g.Screen.position.X*g.Screen.PixelsPerUnit, -g.Screen.position.Y*g.Screen.PixelsPerUnit)
+	op.GeoM.Rotate(-g.Screen.rotation * utils.Deg2Rad)
+	op.GeoM.Translate(
+		-(g.Screen.position.X-g.Screen.viewportSize.X/2)*g.Screen.PixelsPerUnit,
+		-(g.Screen.position.Y-g.Screen.viewportSize.Y/2)*g.Screen.PixelsPerUnit,
+	)
 
 	screen.Fill(g.Screen.color)
 	g.Renderer.Draw(screen, op)
@@ -109,8 +120,12 @@ func (g *Game) draw(screen *ebiten.Image) {
 }
 
 func (g *Game) tick() error {
+	delta := time.Since(g.lastUpdate)
+	g.lastUpdate = time.Now()
+
 	g.Renderer.Clear()
 	g.Inputs.Update()
+	g.Timer.Update(delta.Seconds())
 
 	buffer := make([]*systemEntry, 0)
 

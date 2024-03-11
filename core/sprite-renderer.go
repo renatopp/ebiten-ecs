@@ -3,6 +3,7 @@ package core
 import (
 	"github.com/hajimehoshi/ebiten/v2"
 	sk "github.com/renatopp/skald"
+	"github.com/renatopp/skald/utils"
 )
 
 type SpriteRendererResult struct {
@@ -23,7 +24,7 @@ var SpriteRenderer = sk.NewSystem(func(g *sk.Game) error {
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Reset()
 		op.GeoM.Translate(-float64(bounds.Max.X)/2, -float64(bounds.Max.Y)/2)
-		op.GeoM.Rotate(r.Transform.Rotation)
+		op.GeoM.Rotate(r.Transform.Rotation * utils.Deg2Rad)
 		op.GeoM.Translate(r.Transform.Position.X*g.Screen.PixelsPerUnit, r.Transform.Position.Y*g.Screen.PixelsPerUnit)
 		op.GeoM.Scale(r.Transform.Scale.X, r.Transform.Scale.Y)
 		g.Renderer.Queue(r.Sprite.Layer, r.Sprite.ZIndex, r.Sprite.Texture.Image, op)

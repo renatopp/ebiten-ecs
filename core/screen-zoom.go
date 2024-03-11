@@ -7,7 +7,8 @@ import (
 
 var ScreenZoom = sk.NewSystem(func(g *sk.Game) error {
 	if inputs.MouseWheelY.IsDown() {
-		g.Screen.Zoom(inputs.MouseWheelX.GetFloat())
+		wheel := inputs.MouseWheelY.GetFloat()
+		g.Screen.Zoom(wheel)
 	}
 
 	return nil

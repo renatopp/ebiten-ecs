@@ -58,21 +58,6 @@ func (r *Renderer) Draw(screen *ebiten.Image, cameraOps *ebiten.DrawImageOptions
 			screen.DrawImage(item.image, ops)
 		}
 	}
-
-	// TODO: Remove me
-	// im := ebiten.NewImage(1000, 1000)
-	// vector.DrawFilledCircle(im, 500, 500, 100, color.White, false)
-	// vector.DrawFilledCircle(im, 500, 500, 1, color.RGBA{255, 0, 0, 255}, false)
-	// vector.DrawFilledCircle(im, 700, 500, 50, color.White, false)
-	// vector.DrawFilledCircle(im, 300, 500, 50, color.White, false)
-	// vector.DrawFilledCircle(im, 500, 700, 50, color.White, false)
-	// vector.DrawFilledCircle(im, 500, 300, 50, color.White, false)
-
-	// ops2 := &ebiten.DrawImageOptions{}
-	// ops2.GeoM.Translate(-500, -500)
-	// ops2.GeoM.Concat(cameraOps.GeoM)
-	// screen.DrawImage(im, ops2)
-	// END REMOVE
 }
 
 func (r *Renderer) Clear() {
