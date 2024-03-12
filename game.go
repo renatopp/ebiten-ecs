@@ -8,7 +8,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/renatopp/skald/inputs"
-	"github.com/renatopp/skald/utils"
+	"github.com/renatopp/skald/mathf"
 )
 
 type Game struct {
@@ -105,7 +105,7 @@ func (g *Game) Play() {
 
 func (g *Game) draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Rotate(-g.Screen.rotation * utils.Deg2Rad)
+	op.GeoM.Rotate(-g.Screen.rotation * mathf.Deg2Rad)
 	op.GeoM.Translate(
 		-(g.Screen.position.X-g.Screen.viewportSize.X/2)*g.Screen.PixelsPerUnit,
 		-(g.Screen.position.Y-g.Screen.viewportSize.Y/2)*g.Screen.PixelsPerUnit,

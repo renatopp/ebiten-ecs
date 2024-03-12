@@ -3,7 +3,7 @@ package core
 import (
 	"github.com/hajimehoshi/ebiten/v2"
 	sk "github.com/renatopp/skald"
-	"github.com/renatopp/skald/utils"
+	"github.com/renatopp/skald/mathf"
 )
 
 type SpriteRendererResult struct {
@@ -29,7 +29,7 @@ var SpriteRenderer = sk.NewSystem(func(g *sk.Game) error {
 			ops = &ebiten.DrawImageOptions{}
 			ops.GeoM.Translate(-halfX, -halfY)
 			ops.GeoM.Scale(r.Transform.scaleX, r.Transform.scaleY)
-			ops.GeoM.Rotate(r.Transform.rotation * utils.Deg2Rad)
+			ops.GeoM.Rotate(r.Transform.rotation * mathf.Deg2Rad)
 			ops.GeoM.Translate(r.Transform.posX*g.Screen.PixelsPerUnit, r.Transform.posY*g.Screen.PixelsPerUnit)
 			r.Sprite.transformVersion = r.Transform.version
 			r.Sprite.ops = ops

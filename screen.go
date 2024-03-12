@@ -5,7 +5,8 @@ import (
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/renatopp/skald/utils"
+	"github.com/renatopp/skald/ease"
+	"github.com/renatopp/skald/mathf"
 )
 
 type Screen struct {
@@ -77,12 +78,12 @@ func (s *Screen) GetZoom() float64 {
 
 func (s *Screen) SetZoom(zoom float64) {
 	s.zoom = zoom
-	s.zoom = utils.Clamp(zoom, 0, s.zoomSteps)
+	s.zoom = mathf.Clamp(zoom, 0, s.zoomSteps)
 	s.resize()
 }
 
 func (s *Screen) Zoom(zoom float64) {
-	s.zoom = utils.Clamp(s.zoom+zoom, 0, s.zoomSteps)
+	s.zoom = mathf.Clamp(s.zoom+zoom, 0, s.zoomSteps)
 	s.resize()
 }
 
@@ -107,7 +108,7 @@ func (s *Screen) SetRotation(rotation float64) {
 func (s *Screen) Rotate(rotation float64) {
 	s.rotation += rotation
 
-	t := rotation * utils.Deg2Rad
+	t := rotation * mathf.Deg2Rad
 	x2 := s.position.X*math.Cos(t) - s.position.Y*math.Sin(t)
 	y2 := s.position.X*math.Sin(t) + s.position.Y*math.Cos(t)
 	s.Move(s.position.X-x2, s.position.Y-y2)
@@ -135,7 +136,7 @@ func (s *Screen) WorldPositionToScreen(x, y float64) (int, int) {
 }
 
 func (s *Screen) resize() {
-	s.effectiveZoom = utils.Lerp(s.minZoom, s.maxZoom, utils.EaseInQuad(s.zoom/s.zoomSteps))
+	s.effectiveZoom = mathf.Lerp(s.minZoom, s.maxZoom, ease.InQuad(s.zoom/s.zoomSteps))
 	newW := s.size.X * 1.0 / s.effectiveZoom
 	newH := s.size.Y * 1.0 / s.effectiveZoom
 	if newW <= 16384 && newH <= 16384 {

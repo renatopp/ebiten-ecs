@@ -3,13 +3,13 @@ package main
 import (
 	"image/color"
 	"math"
-	"math/rand"
 
 	"github.com/hajimehoshi/ebiten/v2/vector"
 	sk "github.com/renatopp/skald"
 	"github.com/renatopp/skald/core"
 	"github.com/renatopp/skald/inputs"
-	"github.com/renatopp/skald/utils"
+	"github.com/renatopp/skald/mathf"
+	"github.com/renatopp/skald/random"
 )
 
 func main() {
@@ -30,7 +30,7 @@ func main() {
 			// s.Texture = handlet.AsTexture()
 			s.Texture = sk.NewEmptyTexture(int(bounds.Size.X*ppu), int(bounds.Size.Y*ppu))
 
-			red := uint8(utils.Lerp(0, 255, r.Mass/5))
+			red := uint8(mathf.Lerp(0, 255, r.Mass/5))
 			c := color.RGBA{red, 0, 0, 255}
 
 			// Draw the body
@@ -51,7 +51,7 @@ func main() {
 	game.AddSystem(MoveBall)
 	game.World.SpawnMulti(20, bodies, func(e *sk.EntityInstance) {
 		t := core.Transform.Get(e)
-		t.Position = sk.Vec2{X: rand.Float64()*5 - 2.5, Y: rand.Float64()*5 - 2.5}
+		t.MoveTo(random.Range(-2.5, 2.5), random.Range(-2.5, 2.5))
 	})
 
 	game.Play()
@@ -75,9 +75,10 @@ var Physics = sk.NewSystem(func(g *sk.Game) error {
 			ok, normal, depth := collideCircleCircle(a.Transform, b.Transform, a.RigidBody, b.RigidBody)
 
 			if ok {
-				// println("collision", normal.X, normal.Y, depth)
-				a.Transform.Position = a.Transform.Position.Add(normal.MulS(depth / 2))
-				b.Transform.Position = b.Transform.Position.Add(normal.MulS(-depth / 2))
+				hdepth := depth / 2
+
+				a.Transform.MoveBy(normal.X*hdepth, normal.Y*hdepth)
+				b.Transform.MoveBy(-normal.X*hdepth, -normal.Y*hdepth)
 			}
 		}
 	}
@@ -101,7 +102,7 @@ var MoveBall = sk.NewSystem(func(g *sk.Game) error {
 			d.X += 1
 		}
 
-		d = d.Normalized().MulS(g.Timer.GetDeltaTime() * 2)
+		d = d.Normalized().MulS(g.Timer.DeltaTime * 2)
 		r.Transform.MoveBy(d.X, d.Y)
 
 		break
@@ -178,7 +179,7 @@ func (r *DRigidBody) AsCircle(radius, density, restitution float64, static bool)
 	r.Radius = radius
 	r.Area = area
 	r.Density = density
-	r.Restitution = utils.Clamp(restitution, 0, 1)
+	r.Restitution = mathf.Clamp(restitution, 0, 1)
 	r.Static = static
 
 	r.Mass = area * density
@@ -212,14 +213,14 @@ func (r *DRigidBody) AsBox(width, height, density, restitution float64, static b
 	r.Height = height
 	r.Area = area
 	r.Density = density
-	r.Restitution = utils.Clamp(restitution, 0, 1)
+	r.Restitution = mathf.Clamp(restitution, 0, 1)
 	r.Static = static
 
 	r.Mass = area * density
 }
 
 func (r *DRigidBody) AsRandom() {
-	r.AsCircle(rand.Float64()/3+.1, rand.Float64()*1+.5, rand.Float64(), false)
+	r.AsCircle(random.Range(.1, .5), random.Range(.5, 1), random.Float(), false)
 	// if rand.Intn(2) == 0 {
 	// 	r.AsCircle(rand.Float64()*23+5, rand.Float64()*20+1, rand.Float64(), false)
 	// } else {
@@ -238,13 +239,15 @@ var RigidBody = sk.NewComponentWithOptions(sk.ComponentOptions[DRigidBody]{
 })
 
 func collideCircleCircle(at, bt *core.DTransform, ab, bb *DRigidBody) (ok bool, normal *sk.Vec2, depth float64) {
+	ax, ay := at.GetPosition()
+	bx, by := bt.GetPosition()
+
 	t := ab.Radius + bb.Radius
-	d := at.Position.Distance(bt.Position)
-	// fmt.Printf("%.2f < %.2f\n", d, t)
+	d := mathf.Distance(ax, ay, bx, by)
 	if d < t {
-		n := at.Position.Sub(bt.Position).Normalized()
+		nx, ny := mathf.Normalize(ax-bx, ay-by)
 		depth = t - d
-		return true, &n, depth
+		return true, &sk.Vec2{X: nx, Y: ny}, depth
 	}
 
 	return false, nil, 0
