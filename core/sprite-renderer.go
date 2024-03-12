@@ -15,19 +15,26 @@ var SpriteRendererQuery = sk.NewQuery[SpriteRendererResult]()
 
 var SpriteRenderer = sk.NewSystem(func(g *sk.Game) error {
 	for _, r := range SpriteRendererQuery.Query() {
-		if !r.Transform.Enabled {
+		if !r.Transform.enabled {
 			continue
 		}
 
 		bounds := r.Sprite.Texture.Image.Bounds()
+		halfX, halfY := float64(bounds.Max.X)/2, float64(bounds.Max.Y)/2
 
-		op := &ebiten.DrawImageOptions{}
-		op.GeoM.Reset()
-		op.GeoM.Translate(-float64(bounds.Max.X)/2, -float64(bounds.Max.Y)/2)
-		op.GeoM.Rotate(r.Transform.Rotation * utils.Deg2Rad)
-		op.GeoM.Translate(r.Transform.Position.X*g.Screen.PixelsPerUnit, r.Transform.Position.Y*g.Screen.PixelsPerUnit)
-		op.GeoM.Scale(r.Transform.Scale.X, r.Transform.Scale.Y)
-		g.Renderer.Queue(r.Sprite.Layer, r.Sprite.ZIndex, r.Sprite.Texture.Image, op)
+		var ops *ebiten.DrawImageOptions
+		if r.Transform.version == r.Sprite.transformVersion {
+			ops = r.Sprite.ops
+		} else {
+			ops = &ebiten.DrawImageOptions{}
+			ops.GeoM.Translate(-halfX, -halfY)
+			ops.GeoM.Scale(r.Transform.scaleX, r.Transform.scaleY)
+			ops.GeoM.Rotate(r.Transform.rotation * utils.Deg2Rad)
+			ops.GeoM.Translate(r.Transform.posX*g.Screen.PixelsPerUnit, r.Transform.posY*g.Screen.PixelsPerUnit)
+			r.Sprite.transformVersion = r.Transform.version
+			r.Sprite.ops = ops
+		}
+		g.Renderer.Queue(r.Sprite.Layer, r.Sprite.ZIndex, r.Sprite.Texture.Image, ops)
 	}
 
 	return nil

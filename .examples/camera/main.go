@@ -27,8 +27,7 @@ func main() {
 	game.AddSystem(core.ScreenFlight)
 	game.World.SpawnMulti(5000, rabbits, func(e *sk.EntityInstance) {
 		t := core.Transform.Get(e)
-		t.Position.X = rand.Float64()*50 - 25
-		t.Position.Y = rand.Float64()*50 - 25
+		t.MoveTo(rand.Float64()*50-25, rand.Float64()*50-25)
 	})
 	game.Play()
 }

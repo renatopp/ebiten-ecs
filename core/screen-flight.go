@@ -9,7 +9,7 @@ var SCREEN_FLIGHT_MOVE_SPEED float64 = 10
 var SCREEN_FLIGHT_ROTATE_SPEED float64 = 90
 
 var ScreenFlight = sk.NewSystem(func(g *sk.Game) error {
-	dt := g.Timer.GetDeltaTime()
+	dt := g.Timer.DeltaTime
 	if inputs.KeyW.IsDown() {
 		g.Screen.Move(0, -SCREEN_FLIGHT_MOVE_SPEED*dt)
 	} else if inputs.KeyS.IsDown() {

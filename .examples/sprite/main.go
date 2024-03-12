@@ -1,7 +1,6 @@
 package main
 
 import (
-	"math"
 	"math/rand"
 
 	sk "github.com/renatopp/skald"
@@ -19,9 +18,7 @@ var RotatersQuery = sk.NewQuery[struct {
 
 var RotateRotators = sk.NewSystem(func(g *sk.Game) error {
 	for _, r := range RotatersQuery.Query() {
-		r.Transform.Rotation += 0.1
-		r.Transform.Scale.X = 1 + math.Abs(math.Sin(r.Transform.Rotation))
-		r.Transform.Scale.Y = 1 + math.Abs(math.Sin(r.Transform.Rotation))
+		r.Transform.RotateBy(180 * g.Timer.DeltaTime)
 	}
 	return nil
 }, RotatersQuery)
@@ -40,10 +37,9 @@ func main() {
 
 	game.AddSystem(core.SpriteRenderer)
 	game.AddSystem(RotateRotators)
-	game.World.SpawnMulti(5000, rabbits, func(e *sk.EntityInstance) {
+	game.World.SpawnMulti(15000, rabbits, func(e *sk.EntityInstance) {
 		t := core.Transform.Get(e)
-		t.Position.X = rand.Float64()*2 - 1
-		t.Position.Y = rand.Float64()*2 - 1
+		t.MoveTo(rand.Float64()*2-1, rand.Float64()*2-1)
 	})
 	// game.World.Spawn(rabbits)
 	game.Play()

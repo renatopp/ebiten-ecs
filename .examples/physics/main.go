@@ -101,8 +101,8 @@ var MoveBall = sk.NewSystem(func(g *sk.Game) error {
 			d.X += 1
 		}
 
-		d = d.Normalized()
-		r.Transform.Position = r.Transform.Position.Add(d.MulS(g.Timer.GetDeltaTime() * 2))
+		d = d.Normalized().MulS(g.Timer.GetDeltaTime() * 2)
+		r.Transform.MoveBy(d.X, d.Y)
 
 		break
 	}

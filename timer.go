@@ -3,18 +3,19 @@ package sk
 var nextTimerId ID = 0
 
 type Timer struct {
-	id        ID
-	deltaTime float64
-	scale     float64
-	paused    bool
+	DeltaTime float64
+
+	id     ID
+	scale  float64
+	paused bool
 
 	attached map[ID]*Timer
 }
 
 func NewTimer() *Timer {
 	t := &Timer{
+		DeltaTime: 0,
 		id:        nextTimerId,
-		deltaTime: 0,
 		scale:     1,
 		paused:    false,
 		attached:  make(map[ID]*Timer),
@@ -27,19 +28,15 @@ func NewTimer() *Timer {
 // Delta time in seconds
 func (t *Timer) Update(dt float64) {
 	if t.paused {
-		t.deltaTime = 0
+		t.DeltaTime = 0
 		return
 	}
 
-	t.deltaTime = dt * t.scale
+	t.DeltaTime = dt * t.scale
 
 	for _, other := range t.attached {
 		other.Update(dt)
 	}
-}
-
-func (t *Timer) GetDeltaTime() float64 {
-	return t.deltaTime
 }
 
 func (t *Timer) IsPaused() bool {
