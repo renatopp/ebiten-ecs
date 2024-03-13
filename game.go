@@ -19,6 +19,7 @@ type Game struct {
 	Window   *Window
 	Screen   *Screen
 	Timer    *Timer
+	Debug    *Debug
 
 	lastUpdate time.Time
 	systems    []*systemEntry
@@ -38,6 +39,7 @@ func NewGame() *Game {
 		Window:     NewWindow(),
 		Screen:     NewScreen(),
 		Timer:      NewTimer(),
+		Debug:      NewDebug(),
 		lastUpdate: time.Now(),
 
 		systems:  make([]*systemEntry, 0),
@@ -112,7 +114,11 @@ func (g *Game) draw(screen *ebiten.Image) {
 	)
 
 	screen.Fill(g.Screen.color)
+	g.Debug.execBeforeDraw(screen)
+
 	g.Renderer.Draw(screen, op)
+
+	g.Debug.execAfterDraw(screen)
 
 	// TODO: Remove me
 	msg := fmt.Sprintf("TPS: %0.2f;\nFPS: %0.2f\nTotal: %d", ebiten.ActualTPS(), ebiten.ActualFPS(), g.totalEntities)
